@@ -10,6 +10,10 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: marketplace
+    description: Membership marketplace operations
+  - name: locations
+    description: Gym and location operations
 paths:
   /healthz:
     get:
@@ -24,6 +28,151 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /listings:
+    get:
+      operationId: getListings
+      tags: [marketplace]
+      summary: Search membership listings
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: location
+          in: query
+          schema:
+            type: string
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: maxPrice
+          in: query
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Matching membership listings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MembershipListing"
+    post:
+      operationId: createListing
+      tags: [marketplace]
+      summary: List a membership for sale
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingInput"
+      responses:
+        "201":
+          description: Created listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MembershipListing"
+  /listings/{id}:
+    get:
+      operationId: getListing
+      tags: [marketplace]
+      summary: Get a membership listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Membership listing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MembershipListing"
+        "404":
+          description: Listing not found
+    post:
+      operationId: purchaseListing
+      tags: [marketplace]
+      summary: Purchase a membership listing
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseInput"
+      responses:
+        "200":
+          description: Purchase confirmation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseResult"
+        "404":
+          description: Listing not found
+  /stats:
+    get:
+      operationId: getMarketplaceStats
+      tags: [marketplace]
+      summary: Get marketplace summary stats
+      responses:
+        "200":
+          description: Marketplace summary stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketplaceStats"
+  /gyms/nearby:
+    get:
+      operationId: getNearbyGyms
+      tags: [locations]
+      summary: Find gyms near a location
+      parameters:
+        - name: location
+          in: query
+          schema:
+            type: string
+        - name: radius
+          in: query
+          schema:
+            type: number
+      responses:
+        "200":
+          description: Nearby gyms
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Gym"
+    post:
+      operationId: registerGym
+      tags: [locations]
+      summary: Register a gym or fitness venue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GymInput"
+      responses:
+        "201":
+          description: Registered gym
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Gym"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +182,190 @@ components:
           type: string
       required:
         - status
+    MembershipListing:
+      type: object
+      required:
+        - id
+        - title
+        - venue
+        - category
+        - location
+        - distance
+        - originalPrice
+        - price
+        - savings
+        - validUntil
+        - access
+        - seller
+        - rating
+        - image
+        - status
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        venue:
+          type: string
+        category:
+          type: string
+        location:
+          type: string
+        distance:
+          type: string
+        originalPrice:
+          type: number
+        price:
+          type: number
+        savings:
+          type: number
+        validUntil:
+          type: string
+        access:
+          type: string
+        seller:
+          type: string
+        rating:
+          type: number
+        image:
+          type: string
+        status:
+          type: string
+    ListingInput:
+      type: object
+      required:
+        - title
+        - venue
+        - category
+        - location
+        - originalPrice
+        - price
+        - validUntil
+        - access
+        - seller
+        - image
+      properties:
+        title:
+          type: string
+          minLength: 1
+        venue:
+          type: string
+          minLength: 1
+        category:
+          type: string
+          minLength: 1
+        location:
+          type: string
+          minLength: 1
+        originalPrice:
+          type: number
+          minimum: 0
+        price:
+          type: number
+          minimum: 0
+        validUntil:
+          type: string
+        access:
+          type: string
+        seller:
+          type: string
+        image:
+          type: string
+    PurchaseInput:
+      type: object
+      required:
+        - buyerName
+        - buyerEmail
+      properties:
+        buyerName:
+          type: string
+          minLength: 1
+        buyerEmail:
+          type: string
+    PurchaseResult:
+      type: object
+      required:
+        - confirmationId
+        - listing
+        - message
+      properties:
+        confirmationId:
+          type: string
+        listing:
+          $ref: "#/components/schemas/MembershipListing"
+        message:
+          type: string
+    MarketplaceStats:
+      type: object
+      required:
+        - activeListings
+        - averageSavings
+        - cities
+        - membershipsSwapped
+      properties:
+        activeListings:
+          type: number
+        averageSavings:
+          type: number
+        cities:
+          type: number
+        membershipsSwapped:
+          type: number
+    Gym:
+      type: object
+      required:
+        - id
+        - name
+        - category
+        - location
+        - address
+        - rating
+        - distance
+        - lat
+        - lng
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        category:
+          type: string
+        location:
+          type: string
+        address:
+          type: string
+        rating:
+          type: number
+        distance:
+          type: string
+        lat:
+          type: number
+        lng:
+          type: number
+    GymInput:
+      type: object
+      required:
+        - name
+        - category
+        - location
+        - address
+        - lat
+        - lng
+      properties:
+        name:
+          type: string
+          minLength: 1
+        category:
+          type: string
+          minLength: 1
+        location:
+          type: string
+          minLength: 1
+        address:
+          type: string
+          minLength: 1
+        lat:
+          type: number
+        lng:
+          type: number
 
