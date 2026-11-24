@@ -1,0 +1,12 @@
+package com.fitswap.api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class FitSwapApiApplication {
+
+  public static void main(String[] args) {
+    SpringApplication.run(FitSwapApiApplication.class, args);
+  }
+}

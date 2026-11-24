@@ -1,0 +1,8 @@
+/Users/B0286380/Downloads/fitswap/Fit-Swap/artifacts/api-server-java/src/main/java/com/fitswap/api/FitSwapApiApplication.java
+/Users/B0286380/Downloads/fitswap/Fit-Swap/artifacts/api-server-java/src/main/java/com/fitswap/api/config/CorsConfig.java
+/Users/B0286380/Downloads/fitswap/Fit-Swap/artifacts/api-server-java/src/main/java/com/fitswap/api/controller/HealthController.java
+/Users/B0286380/Downloads/fitswap/Fit-Swap/artifacts/api-server-java/src/main/java/com/fitswap/api/controller/MarketplaceController.java
+/Users/B0286380/Downloads/fitswap/Fit-Swap/artifacts/api-server-java/src/main/java/com/fitswap/api/model/Gym.java
+/Users/B0286380/Downloads/fitswap/Fit-Swap/artifacts/api-server-java/src/main/java/com/fitswap/api/model/Listing.java
+/Users/B0286380/Downloads/fitswap/Fit-Swap/artifacts/api-server-java/src/main/java/com/fitswap/api/service/InMemoryMarketplaceService.java
+/Users/B0286380/Downloads/fitswap/Fit-Swap/artifacts/api-server-java/src/main/java/com/fitswap/api/service/MarketplaceService.java
